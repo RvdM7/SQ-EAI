@@ -32,9 +32,6 @@ public  class ListenerStarter implements Runnable, ExceptionListener {
             MessageConsumer consumer = session.createConsumer(destination,selector);
             System.out.println("Produce, wait, consume"+ selector);
             consumer.setMessageListener(new QueueListener(selector));
-/*            consumer.close();
-            session.close();
-            connection.close();*/
         } catch (Exception e) {
             System.out.println("Caught: " + e);
             e.printStackTrace();
