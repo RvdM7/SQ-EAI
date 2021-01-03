@@ -2,6 +2,8 @@ package hanze.nl.bussimulator;
 
 import com.thoughtworks.xstream.XStream;
 import hanze.nl.bussimulator.Halte.Positie;
+import hanze.nl.model.Bericht;
+import hanze.nl.model.ETA;
 
 public class Bus{
 

@@ -2,6 +2,8 @@ package hanze.nl.mockdatabaselogger;
 
 import javax.jms.*;
 
+import hanze.nl.model.Bericht;
+import hanze.nl.model.ETA;
 import org.apache.activemq.ActiveMQConnection;
 import org.apache.activemq.ActiveMQConnectionFactory;
 import com.thoughtworks.xstream.XStream;
