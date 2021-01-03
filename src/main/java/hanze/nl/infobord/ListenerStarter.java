@@ -22,20 +22,24 @@ public  class ListenerStarter implements Runnable, ExceptionListener {
 
 	public void run() {
         try {
-            ActiveMQConnectionFactory connectionFactory = 
-            		new ActiveMQConnectionFactory(ActiveMQConnection.DEFAULT_BROKER_URL);
-            Connection connection = connectionFactory.createConnection();
-            connection.start();
-            connection.setExceptionListener(this);
-            Session session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
-            Destination destination = session.createTopic("JSON_Berichten");
-            MessageConsumer consumer = session.createConsumer(destination,selector);
+            MessageConsumer consumer = createConnections();
             System.out.println("Produce, wait, consume"+ selector);
             consumer.setMessageListener(new QueueListener(selector));
         } catch (Exception e) {
             System.out.println("Caught: " + e);
             e.printStackTrace();
         }
+    }
+
+    private MessageConsumer createConnections() throws JMSException{
+        ActiveMQConnectionFactory connectionFactory =
+                new ActiveMQConnectionFactory(ActiveMQConnection.DEFAULT_BROKER_URL);
+        Connection connection = connectionFactory.createConnection();
+        connection.start();
+        connection.setExceptionListener(this);
+        Session session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
+        Destination destination = session.createTopic("JSON_Berichten");
+        return session.createConsumer(destination,selector);
     }
 
     public synchronized void onException(JMSException ex) {

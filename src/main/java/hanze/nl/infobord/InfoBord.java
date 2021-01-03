@@ -28,26 +28,35 @@ public class InfoBord {
 	
 	private InfoBord(){
 		this.scherm = new JFrame("InfoBord");
+		initRegels();
+		JPanel panel = initPanel();
+		hashValue=0;
+		scherm.add(panel);
+		scherm.pack();
+		scherm.setVisible(true);
+	}
+
+	private JPanel initPanel(){
 		JPanel panel = new JPanel();
 		BoxLayout boxlayout = new BoxLayout(panel, BoxLayout.Y_AXIS);
 		panel.setLayout(boxlayout);
 		panel.setBorder(new EmptyBorder(new Insets(10, 20, 10, 20)));
-		this.tijdregel1=new JLabel("Scherm voor de laatste keer bijgewerkt op:");
-		this.tijdregel2=new JLabel("00:00:00");
-		this.regel1=new JLabel("-regel1-");
-		this.regel2=new JLabel("-regel2-");
-		this.regel3=new JLabel("-regel3-");
-		this.regel4=new JLabel("-regel4-");
 		panel.add(tijdregel1);
 		panel.add(tijdregel2);
 		panel.add(regel1);
 		panel.add(regel2);
 		panel.add(regel3);
 		panel.add(regel4);
-		hashValue=0;
-		scherm.add(panel);
-		scherm.pack();
-		scherm.setVisible(true);
+		return panel;
+	}
+
+	private void initRegels(){
+		this.tijdregel1=new JLabel("Scherm voor de laatste keer bijgewerkt op:");
+		this.tijdregel2=new JLabel("00:00:00");
+		this.regel1=new JLabel("-regel1-");
+		this.regel2=new JLabel("-regel2-");
+		this.regel3=new JLabel("-regel3-");
+		this.regel4=new JLabel("-regel4-");
 	}
 	
 	public static InfoBord getInfoBord(){
@@ -59,34 +68,36 @@ public class InfoBord {
 
 
 	public void setRegels(){
-		String[] infoTekst={"--1--","--2--","--3--","--4--","leeg"};
-		int[] aankomsttijden=new int[5];
+		String[] infoTekst = {"--1--","--2--","--3--","--4--","leeg"};
+		int[] aankomsttijden = new int[5];
 		int aantalRegels = 0;
-		if(!infoBordRegels.isEmpty()){
-			for(String busID: infoBordRegels.keySet()){
+
+		if(!infoBordRegels.isEmpty()) {
+			for (String busID : infoBordRegels.keySet()) {
+
 				JSONBericht regel = infoBordRegels.get(busID);
-				int dezeTijd=regel.getAankomsttijd();
-				String dezeTekst=regel.getInfoRegel();
-				int plaats=aantalRegels;
-				for(int i=aantalRegels;i>0;i--){
-					if(dezeTijd<aankomsttijden[i-1]){
-						aankomsttijden[i]=aankomsttijden[i-1];
-						infoTekst[i]=infoTekst[i-1];
-						plaats=i-1;
+				int dezeTijd = regel.getAankomsttijd();
+				String dezeTekst = regel.getInfoRegel();
+
+				int plaats = aantalRegels;
+				for (int i = aantalRegels; i > 0; i--) {
+					if (dezeTijd < aankomsttijden[i - 1]) {
+						aankomsttijden[i] = aankomsttijden[i - 1];
+						infoTekst[i] = infoTekst[i - 1];
+						plaats = i - 1;
 					}
 				}
-				aankomsttijden[plaats]=dezeTijd;
-				infoTekst[plaats]=dezeTekst;
-				if(aantalRegels<4){
-					aantalRegels++;
-				}
+
+				aankomsttijden[plaats] = dezeTijd;
+				infoTekst[plaats] = dezeTekst;
+
+				if (aantalRegels < 4) aantalRegels++;
+
 			}
 		}
-		if(checkRepaint(aantalRegels, aankomsttijden)){
-			repaintInfoBord(infoTekst);
-		}
+		if(checkRepaint(aantalRegels, aankomsttijden)) repaintInfoBord(infoTekst);
 	}
-	
+
 	private boolean checkRepaint(int aantalRegels, int[] aankomsttijden){
 		int totaalTijden=0;
 		for(int i=0; i<aantalRegels;i++){
@@ -117,14 +128,18 @@ public class InfoBord {
 			Integer tijd = bericht.getTijd();
 			if (!laatsteBericht.containsKey(busID) || laatsteBericht.get(busID)<=tijd){
 				laatsteBericht.put(busID, tijd);
-				if (bericht.getAankomsttijd()==0){
-					infoBordRegels.remove(busID);
-				} else {
-					infoBordRegels.put(busID, bericht);
-				}
+				handleBusID(bericht, busID);
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
+		}
+	}
+
+	private static void handleBusID(JSONBericht bericht, String busID){
+		if (bericht.getAankomsttijd()==0){
+			infoBordRegels.remove(busID);
+		} else {
+			infoBordRegels.put(busID, bericht);
 		}
 	}
 }

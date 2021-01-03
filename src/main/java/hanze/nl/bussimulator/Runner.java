@@ -1,8 +1,5 @@
 package hanze.nl.bussimulator;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
+import java.util.*;
 
 import hanze.nl.tijdtools.TijdFuncties;
 
@@ -12,6 +9,7 @@ public class Runner {
 	private static ArrayList<Bus> actieveBussen = new ArrayList<Bus>();
 	private static int interval=1000;
 	private static int syncInterval=5;
+	private static final ArrayList<Lijnen> flixBusLijnen = new ArrayList<Lijnen>(Arrays.asList(Lijnen.LIJN5));
 	
 	private static void addBus(int starttijd, Bus bus){
 		ArrayList<Bus> bussen = new ArrayList<Bus>();
@@ -52,58 +50,34 @@ public class Runner {
 	}
 	
 	public static int initBussen(){
-		Bus bus1=new Bus(Lijnen.LIJN1, Bedrijven.ARRIVA, 1);
-		Bus bus2=new Bus(Lijnen.LIJN2, Bedrijven.ARRIVA, 1);
-		Bus bus3=new Bus(Lijnen.LIJN3, Bedrijven.ARRIVA, 1);
-		Bus bus4=new Bus(Lijnen.LIJN4, Bedrijven.ARRIVA, 1);
-		Bus bus5=new Bus(Lijnen.LIJN5, Bedrijven.FLIXBUS, 1);
-		Bus bus6=new Bus(Lijnen.LIJN6, Bedrijven.QBUZZ, 1);
-		Bus bus7=new Bus(Lijnen.LIJN7, Bedrijven.QBUZZ, 1);
-		Bus bus8=new Bus(Lijnen.LIJN1, Bedrijven.ARRIVA, 1);
-		Bus bus9=new Bus(Lijnen.LIJN4, Bedrijven.ARRIVA, 1);
-		Bus bus10=new Bus(Lijnen.LIJN5, Bedrijven.FLIXBUS, 1);
-		addBus(3, bus1);
-		addBus(5, bus2);
-		addBus(4, bus3);
-		addBus(6, bus4);	
-		addBus(3, bus5);
-		addBus(5, bus6);
-		addBus(4, bus7); 
-		addBus(6, bus8);	
-		addBus(12, bus9); 
-		addBus(10, bus10);	
-		Bus bus11=new Bus(Lijnen.LIJN1, Bedrijven.ARRIVA, -1);
-		Bus bus12=new Bus(Lijnen.LIJN2, Bedrijven.ARRIVA, -1);
-		Bus bus13=new Bus(Lijnen.LIJN3, Bedrijven.ARRIVA, -1);
-		Bus bus14=new Bus(Lijnen.LIJN4, Bedrijven.ARRIVA, -1);
-		Bus bus15=new Bus(Lijnen.LIJN5, Bedrijven.FLIXBUS, -1);
-		Bus bus16=new Bus(Lijnen.LIJN6, Bedrijven.QBUZZ, -1);
-		Bus bus17=new Bus(Lijnen.LIJN7, Bedrijven.QBUZZ, -1);
-		Bus bus18=new Bus(Lijnen.LIJN1, Bedrijven.ARRIVA, -1);
-		Bus bus19=new Bus(Lijnen.LIJN4, Bedrijven.ARRIVA, -1);
-		Bus bus20=new Bus(Lijnen.LIJN5, Bedrijven.FLIXBUS, -1);
-		addBus(3, bus11);
-		addBus(5, bus12);
-		addBus(4, bus13);
-		addBus(6, bus14);	
-		addBus(3, bus15);
-		addBus(5, bus16);
-		addBus(4, bus17); 
-		addBus(6, bus18);	
-		addBus(12, bus19); 
-		addBus(10, bus20);	
+		int[] startTijdenLijst = {3, 5, 4, 6, 3, 5, 4, 6, 12, 10};
+
+		for(int richting = -1; richting < 2; richting += 2){
+			for(int lijnNr = 0; lijnNr < Lijnen.values().length; lijnNr++){
+
+				Lijnen lijn = Lijnen.values()[lijnNr];
+				Bus bus;
+
+				if(flixBusLijnen.contains(lijn))
+					bus = new Bus(lijn, Bedrijven.FLIXBUS, richting);
+				else
+					bus = new Bus(lijn, Bedrijven.ARRIVA, richting);
+
+				addBus(startTijdenLijst[lijnNr], bus);
+			}
+		}
+
 		return Collections.min(busStart.keySet());
 	}
 	
 	public static void main(String[] args) throws InterruptedException {
-		int tijd=0;
-		int counter=0;
 		TijdFuncties tijdFuncties = new TijdFuncties();
 		tijdFuncties.initSimulatorTijden(interval,syncInterval);
 		int volgende = initBussen();
+
 		while ((volgende>=0) || !actieveBussen.isEmpty()) {
-			counter=tijdFuncties.getCounter();
-			tijd=tijdFuncties.getTijdCounter();
+			int counter=tijdFuncties.getCounter();
+			int tijd=tijdFuncties.getTijdCounter();
 			System.out.println("De tijd is:" + tijdFuncties.getSimulatorWeergaveTijd());
 			volgende = (counter==volgende) ? startBussen(counter) : volgende;
 			moveBussen(tijd);

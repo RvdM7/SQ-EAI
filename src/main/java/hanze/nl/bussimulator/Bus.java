@@ -71,22 +71,29 @@ public class Bus{
 	}
 	
 	public void sendETAs(int nu){
-		int i=0;
 		Bericht bericht = new Bericht(lijn.name(),bedrijf.name(),busID,nu);
+		checkETA(bericht);
+
+		Positie eerstVolgende = lijn.getHalte(halteNummer+richting).getPositie();
+		int tijdNaarHalte = totVolgendeHalte+nu;
+
+		int i;
+		for (i = halteNummer + richting; !(i >= lijn.getLengte()) && !(i < 0); i = i + richting ){
+			tijdNaarHalte += lijn.getHalte(i).afstand(eerstVolgende);
+			ETA eta = new ETA(lijn.getHalte(i).name(), lijn.getRichting(i),tijdNaarHalte);
+			bericht.ETAs.add(eta);
+			eerstVolgende = lijn.getHalte(i).getPositie();
+		}
+
+		bericht.eindpunt=lijn.getHalte(i-richting).name();
+		sendBericht(bericht);
+	}
+
+	private void checkETA(Bericht bericht){
 		if (bijHalte) {
 			ETA eta = new ETA(lijn.getHalte(halteNummer).name(),lijn.getRichting(halteNummer),0);
 			bericht.ETAs.add(eta);
 		}
-		Positie eerstVolgende=lijn.getHalte(halteNummer+richting).getPositie();
-		int tijdNaarHalte=totVolgendeHalte+nu;
-		for (i = halteNummer+richting ; !(i>=lijn.getLengte()) && !(i < 0); i=i+richting ){
-			tijdNaarHalte+= lijn.getHalte(i).afstand(eerstVolgende);
-			ETA eta = new ETA(lijn.getHalte(i).name(), lijn.getRichting(i),tijdNaarHalte);
-			bericht.ETAs.add(eta);
-			eerstVolgende=lijn.getHalte(i).getPositie();
-		}
-		bericht.eindpunt=lijn.getHalte(i-richting).name();
-		sendBericht(bericht);
 	}
 	
 	public void sendLastETA(int nu){
