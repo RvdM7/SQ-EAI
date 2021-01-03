@@ -15,25 +15,28 @@ public class ArrivaLogger {
 		
     try {
     	createConnections();
-    	int aantalBerichten=0;
-    	int aantalETAs=0;
-
-    	while (true) {
-    		int etaSize = processMessageAndGetETAsize();
-    		if(etaSize >= 0){
-    			aantalBerichten++;
-    			aantalETAs += etaSize;
-    		}else{
-    			break;
-    		}
-    	}
-
+    	processMessages();
     	closeConnections();
-    	System.out.println(aantalBerichten + " berichten met " + aantalETAs + " ETAs verwerkt.");
     	} catch (Exception e) {
     		System.out.println("Caught: " + e);
     		e.printStackTrace();
     	}
+	}
+	
+	private static void processMessages() throws JMSException{
+		int aantalBerichten=0;
+		int aantalETAs=0;
+
+		while (true) {
+			int etaSize = processMessageAndGetETAsize();
+			if(etaSize >= 0){
+				aantalBerichten++;
+				aantalETAs += etaSize;
+			}else{
+				break;
+			}
+		}
+		System.out.println(aantalBerichten + " berichten met " + aantalETAs + " ETAs verwerkt.");
 	}
 
 	private static int processMessageAndGetETAsize() throws JMSException{
