@@ -91,11 +91,13 @@ public class InfoBord {
 				aankomsttijden[plaats] = dezeTijd;
 				infoTekst[plaats] = dezeTekst;
 
-				if (aantalRegels < 4) aantalRegels++;
+				if (aantalRegels < 4)
+					aantalRegels++;
 
 			}
 		}
-		if(checkRepaint(aantalRegels, aankomsttijden)) repaintInfoBord(infoTekst);
+		if(checkRepaint(aantalRegels, aankomsttijden))
+			repaintInfoBord(infoTekst);
 	}
 
 	private boolean checkRepaint(int aantalRegels, int[] aankomsttijden){
