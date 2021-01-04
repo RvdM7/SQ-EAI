@@ -2,8 +2,8 @@ package hanze.nl.mockdatabaselogger;
 
 import javax.jms.*;
 
-import hanze.nl.model.Bericht;
-import hanze.nl.model.ETA;
+import hanze.nl.model.AbstractBericht;
+import hanze.nl.model.AbstractETA;
 import org.apache.activemq.ActiveMQConnection;
 import org.apache.activemq.ActiveMQConnectionFactory;
 import com.thoughtworks.xstream.XStream;
@@ -47,10 +47,10 @@ public class ArrivaLogger {
 			TextMessage textMessage = (TextMessage) message;
 			String text = textMessage.getText();
 			XStream xstream = new XStream();
-			xstream.alias("Bericht", Bericht.class);
-			xstream.alias("ETA", ETA.class);
-			Bericht bericht=(Bericht)xstream.fromXML(text);
-			return bericht.ETAs.size();
+			xstream.alias("AbstractBericht", AbstractBericht.class);
+			xstream.alias("AbstractETA", AbstractETA.class);
+			AbstractBericht bericht=(AbstractBericht) xstream.fromXML(text);
+			return bericht.getETAs().size();
 		} else {
 			System.out.println("Received: " + message);
 			return -1;
