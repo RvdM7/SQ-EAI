@@ -4,7 +4,6 @@ import java.io.IOException;
 import com.thoughtworks.xstream.XStream;
 
 public class TijdFuncties {
-	private Tijd startTijd;
 	private Tijd simulatorTijd;
 	private Tijd verschil;
 	private int interval;
@@ -12,16 +11,16 @@ public class TijdFuncties {
 	private int syncCounter;
 	
     public void initSimulatorTijden(int interval, int syncInterval){
-    	simulatorTijd=new Tijd(0,0,0);
-    	startTijd=getCentralTime();
-    	verschil=berekenVerschil(startTijd,simulatorTijd);
-    	this.interval=interval;
-    	this.syncCounter=syncInterval;
-    	this.syncInterval=syncInterval;
+    	simulatorTijd = new Tijd(0,0,0);
+		Tijd startTijd = getCentralTime();
+    	verschil = berekenVerschil(startTijd,simulatorTijd);
+    	this.interval = interval;
+    	this.syncCounter = syncInterval;
+    	this.syncInterval = syncInterval;
     }
 
     public String getSimulatorWeergaveTijd(){
-    	Tijd simulatorWeergaveTijd= simulatorTijd.copyTijd();
+    	Tijd simulatorWeergaveTijd = simulatorTijd.copyTijd();
     	simulatorWeergaveTijd.increment(verschil);
     	return simulatorWeergaveTijd.toString();
     }
@@ -38,8 +37,8 @@ public class TijdFuncties {
 		Thread.sleep(interval);
 		simulatorTijd.increment(new Tijd(0,0,1));
 		syncCounter--;
-		if (syncCounter==0){
-			syncCounter=syncInterval;
+		if (syncCounter == 0){
+			syncCounter = syncInterval;
 			synchroniseTijd();
 		}
     }
@@ -79,8 +78,7 @@ public class TijdFuncties {
 			String result = httpFuncties.executeGet("xml");
 	        XStream xstream = new XStream();
 	        xstream.alias("Tijd", Tijd.class);
-	        Tijd tijd=(Tijd)xstream.fromXML(result);
-	        return tijd;
+			return (Tijd)xstream.fromXML(result);
 
     	} catch (IOException e) {
 			e.printStackTrace();

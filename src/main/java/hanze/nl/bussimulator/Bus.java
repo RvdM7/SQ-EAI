@@ -7,11 +7,11 @@ import hanze.nl.model.ETA;
 
 public class Bus{
 
-	private Bedrijven bedrijf;
-	private Lijnen lijn;
+	private final Bedrijven bedrijf;
+	private final Lijnen lijn;
 	private int halteNummer;
 	private int totVolgendeHalte;
-	private int richting;
+	private final int richting;
 	private boolean bijHalte;
 	private String busID;
 	
