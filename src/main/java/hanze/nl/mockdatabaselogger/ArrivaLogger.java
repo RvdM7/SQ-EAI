@@ -50,7 +50,7 @@ public class ArrivaLogger {
 			xstream.alias("Bericht", Bericht.class);
 			xstream.alias("ETA", ETA.class);
 			Bericht bericht=(Bericht)xstream.fromXML(text);
-			return bericht.getETAs().size();
+			return bericht.ETAs.size();
 		} else {
 			System.out.println("Received: " + message);
 			return -1;

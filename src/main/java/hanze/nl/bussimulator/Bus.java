@@ -83,18 +83,18 @@ public class Bus{
 		for (i = halteNummer + richting; !(i >= lijn.getLengte()) && !(i < 0); i = i + richting ){
 			tijdNaarHalte += lijn.getHalte(i).afstand(eerstVolgende);
 			ETA eta = new ETA(lijn.getHalte(i).name(), lijn.getRichting(i),tijdNaarHalte);
-			bericht.getETAs().add(eta);
+			bericht.ETAs.add(eta);
 			eerstVolgende = lijn.getHalte(i).getPositie();
 		}
 
-		bericht.setEindpunt(lijn.getHalte(i-richting).name());
+		bericht.eindpunt = lijn.getHalte(i-richting).name();
 		sendBericht(bericht);
 	}
 
 	private void checkETA(Bericht bericht){
 		if (bijHalte) {
 			ETA eta = new ETA(lijn.getHalte(halteNummer).name(),lijn.getRichting(halteNummer),0);
-			bericht.getETAs().add(eta);
+			bericht.ETAs.add(eta);
 		}
 	}
 	
@@ -102,8 +102,8 @@ public class Bus{
 		Bericht bericht = new Bericht(lijn.name(),bedrijf.name(),busID,nu);
 		String eindpunt = lijn.getHalte(halteNummer).name();
 		ETA eta = new ETA(eindpunt,lijn.getRichting(halteNummer),0);
-		bericht.getETAs().add(eta);
-		bericht.setEindpunt(eindpunt);
+		bericht.ETAs.add(eta);
+		bericht.eindpunt = eindpunt;
 		sendBericht(bericht);
 	}
 
