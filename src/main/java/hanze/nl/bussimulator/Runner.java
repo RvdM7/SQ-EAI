@@ -1,7 +1,6 @@
 package hanze.nl.bussimulator;
 import java.util.*;
 
-import hanze.nl.model.Lijnen;
 import hanze.nl.tijdtools.TijdFuncties;
 
 public class Runner {

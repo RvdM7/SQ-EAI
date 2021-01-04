@@ -4,7 +4,6 @@ import com.thoughtworks.xstream.XStream;
 import hanze.nl.bussimulator.Halte.Positie;
 import hanze.nl.model.Bericht;
 import hanze.nl.model.ETA;
-import hanze.nl.model.Lijnen;
 
 public class Bus{
 

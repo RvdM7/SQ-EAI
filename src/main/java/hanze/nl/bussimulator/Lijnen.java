@@ -1,6 +1,4 @@
-package hanze.nl.model;
-
-import hanze.nl.bussimulator.Halte;
+package hanze.nl.bussimulator;
 
 public enum Lijnen {
 	
@@ -28,15 +26,15 @@ public enum Lijnen {
 		this.haltes=haltes;
 	}
 	
-	public int getLengte() {
+	int getLengte() {
 		return haltes.length;
 	}
 	
-	public Halte getHalte(int positie){
+	Halte getHalte(int positie){
 		return haltes[positie].halte;
 	}
 	
-	public int getRichting(int positie){
+	int getRichting(int positie){
 		return haltes[positie].richting;
 	}
 	

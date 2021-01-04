@@ -1,4 +1,4 @@
-package hanze.nl.model;
+package hanze.nl.tijdtools;
 
 public class Tijd
 {

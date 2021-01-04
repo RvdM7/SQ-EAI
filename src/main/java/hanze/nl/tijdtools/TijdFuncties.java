@@ -2,7 +2,6 @@ package hanze.nl.tijdtools;
 
 import java.io.IOException;
 import com.thoughtworks.xstream.XStream;
-import hanze.nl.model.Tijd;
 
 public class TijdFuncties {
 	private Tijd simulatorTijd;
