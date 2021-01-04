@@ -1,6 +1,8 @@
 package hanze.nl.infobord;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 
 import javax.swing.BoxLayout;
@@ -9,6 +11,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import java.awt.Insets;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import hanze.nl.tijdtools.InfobordTijdFuncties;
 
@@ -66,44 +69,75 @@ public class InfoBord {
 		return infobord;
 	}
 
+	static class Pair implements Comparable<Pair>{
+		public final String infoTekst;
+		public final int aankomstTijd;
+
+		Pair(String infoTekst, int aankomstTijd){
+			this.infoTekst = infoTekst;
+			this.aankomstTijd = aankomstTijd;
+		}
+
+		@Override
+		public boolean equals(Object obj) {
+			if(obj.getClass() == this.getClass()){
+				Pair pair = (Pair) obj;
+				return pair.aankomstTijd == this.aankomstTijd && pair.infoTekst.equals(this.infoTekst);
+			}
+			return false;
+		}
+
+		public int compareTo(Pair o) {
+			if(this.aankomstTijd < o.aankomstTijd){
+				return -1;
+			}else if(this.aankomstTijd > o.aankomstTijd){
+				return 1;
+			}
+			return 0;
+		}
+	}
 
 	public void setRegels(){
-		String[] infoTekst = {"--1--","--2--","--3--","--4--","leeg"};
-		int[] aankomsttijden = new int[5];
-		int aantalRegels = 0;
+		ArrayList<Pair> regels = new ArrayList<Pair>();
 
 		if(!infoBordRegels.isEmpty()) {
 			for (String busID : infoBordRegels.keySet()) {
-
 				JSONBericht regel = infoBordRegels.get(busID);
-				int dezeTijd = regel.getAankomsttijd();
-				String dezeTekst = regel.getInfoRegel();
 
-				int plaats = aantalRegels;
-				for (int i = aantalRegels; i > 0; i--) {
-					if (dezeTijd < aankomsttijden[i - 1]) {
-						aankomsttijden[i] = aankomsttijden[i - 1];
-						infoTekst[i] = infoTekst[i - 1];
-						plaats = i - 1;
-					}
-				}
-
-				aankomsttijden[plaats] = dezeTijd;
-				infoTekst[plaats] = dezeTekst;
-
-				if (aantalRegels < 4)
-					aantalRegels++;
-
+				regels.add(new Pair(regel.getInfoRegel(), regel.getAankomsttijd()));
 			}
 		}
-		if(checkRepaint(aantalRegels, aankomsttijden))
-			repaintInfoBord(infoTekst);
+		Collections.sort(regels);
+
+		if(checkRepaint(getAankomsttijden(regels))) {
+			repaintInfoBord(getInfoTeksts(regels));
+		}
 	}
 
-	private boolean checkRepaint(int aantalRegels, int[] aankomsttijden){
+	private int[] getAankomsttijden(ArrayList<Pair> regels){
+		int[] aankomsttijden = new int[regels.size()];
+
+		for(int i = 0; i < regels.size(); i++){
+			aankomsttijden[i] = regels.get(i).aankomstTijd;
+		}
+
+		return aankomsttijden;
+	}
+
+	private String[] getInfoTeksts(ArrayList<Pair> regels) {
+		String[] infotekst = new String[regels.size()];
+
+		for (int i = 0; i < regels.size(); i++) {
+			infotekst[i] = regels.get(i).infoTekst;
+		}
+
+		return infotekst;
+	}
+	
+	private boolean checkRepaint(int[] aankomsttijden){
 		int totaalTijden=0;
-		for(int i=0; i<aantalRegels;i++){
-			totaalTijden+=aankomsttijden[i];
+		for (int j : aankomsttijden) {
+			totaalTijden += j;
 		}
 		if(hashValue!=totaalTijden){
 			hashValue=totaalTijden;
