@@ -1,6 +1,6 @@
 package hanze.nl.model;
 
-class ETA extends AbstractETA{
+class ETA implements IETA {
 	public String halteNaam;
 	public int richting;
 	public int aankomsttijd;

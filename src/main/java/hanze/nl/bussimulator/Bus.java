@@ -2,8 +2,10 @@ package hanze.nl.bussimulator;
 
 import com.thoughtworks.xstream.XStream;
 import hanze.nl.bussimulator.Halte.Positie;
-import hanze.nl.model.AbstractBericht;
-import hanze.nl.model.AbstractETA;
+import hanze.nl.model.IBericht;
+import hanze.nl.model.IETA;
+import hanze.nl.model.BerichtFactory;
+import hanze.nl.model.ETAFactory;
 
 public class Bus{
 
@@ -73,7 +75,7 @@ public class Bus{
 	}
 	
 	public void sendETAs(int nu){
-		AbstractBericht bericht = AbstractBericht.newBericht(lijn.name(), bedrijf.name(), busID, nu);
+		IBericht bericht = BerichtFactory.createBericht(lijn.name(), bedrijf.name(), busID, nu);
 		checkETA(bericht);
 
 		Positie eerstVolgende = lijn.getHalte(halteNummer+richting).getPositie();
@@ -82,7 +84,7 @@ public class Bus{
 		int i;
 		for (i = halteNummer + richting; !(i >= lijn.getLengte()) && !(i < 0); i = i + richting ){
 			tijdNaarHalte += lijn.getHalte(i).afstand(eerstVolgende);
-			AbstractETA eta = AbstractETA.createETA(lijn.getHalte(i).name(), lijn.getRichting(i),tijdNaarHalte);
+			IETA eta = ETAFactory.createETA(lijn.getHalte(i).name(), lijn.getRichting(i),tijdNaarHalte);
 			bericht.getETAs().add(eta);
 			eerstVolgende = lijn.getHalte(i).getPositie();
 		}
@@ -91,26 +93,26 @@ public class Bus{
 		sendBericht(bericht);
 	}
 
-	private void checkETA(AbstractBericht bericht){
+	private void checkETA(IBericht bericht){
 		if (bijHalte) {
-			AbstractETA eta = AbstractETA.createETA(lijn.getHalte(halteNummer).name(),lijn.getRichting(halteNummer),0);
+			IETA eta = ETAFactory.createETA(lijn.getHalte(halteNummer).name(),lijn.getRichting(halteNummer),0);
 			bericht.getETAs().add(eta);
 		}
 	}
 	
 	public void sendLastETA(int nu){
-		AbstractBericht bericht = AbstractBericht.newBericht(lijn.name(),bedrijf.name(),busID,nu);
+		IBericht bericht = BerichtFactory.createBericht(lijn.name(),bedrijf.name(),busID,nu);
 		String eindpunt = lijn.getHalte(halteNummer).name();
-		AbstractETA eta = AbstractETA.createETA(eindpunt,lijn.getRichting(halteNummer),0);
+		IETA eta = ETAFactory.createETA(eindpunt,lijn.getRichting(halteNummer),0);
 		bericht.getETAs().add(eta);
 		bericht.setEindpunt(eindpunt);
 		sendBericht(bericht);
 	}
 
-	public void sendBericht(AbstractBericht bericht){
+	public void sendBericht(IBericht bericht){
     	XStream xstream = new XStream();
-    	xstream.alias("AbstractBericht", AbstractBericht.class);
-    	xstream.alias("AbstractETA", AbstractETA.class);
+    	xstream.alias("AbstractBericht", IBericht.class);
+    	xstream.alias("AbstractETA", IETA.class);
     	String xml = xstream.toXML(bericht);
     	Producer producer = new Producer();
     	producer.sendBericht(xml);		
