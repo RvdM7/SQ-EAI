@@ -2,6 +2,7 @@ package hanze.nl.tijdtools;
 
 import java.io.IOException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import hanze.nl.model.Tijd;
 
 public class InfobordTijdFuncties {
 
