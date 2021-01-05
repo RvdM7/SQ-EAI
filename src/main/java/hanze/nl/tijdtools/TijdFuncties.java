@@ -3,7 +3,7 @@ package hanze.nl.tijdtools;
 import java.io.IOException;
 import com.thoughtworks.xstream.XStream;
 
-public class TijdFuncties {
+public class TijdFuncties implements ITijdFuncties {
 	private Tijd simulatorTijd;
 	private Tijd verschil;
 	private int interval;
