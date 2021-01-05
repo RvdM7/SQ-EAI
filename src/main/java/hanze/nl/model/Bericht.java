@@ -4,19 +4,17 @@ import java.util.ArrayList;
 
 class Bericht implements IBericht {
 	private String lijnNaam;
-	private String eindpunt;
+	private String eindpunt = "";
 	private String bedrijf;
 	private String busID;
 	private int tijd;
-	private final ArrayList<IETA> ETAs;
-	
-	Bericht(String lijnNaam, String bedrijf, String busID, int tijd){
-		this.lijnNaam=lijnNaam;
-		this.bedrijf=bedrijf;
-		this.eindpunt="";
-		this.busID=busID;
-		this.tijd=tijd;
-		this.ETAs=new ArrayList<IETA>();
+	private final ArrayList<IETA> ETAs = new ArrayList<IETA>();
+
+	Bericht(BerichtInfoBuilder berichtInfoBuilder){
+		this.lijnNaam = berichtInfoBuilder.lijnNaam;
+		this.bedrijf = berichtInfoBuilder.bedrijf;
+		this.busID = berichtInfoBuilder.busID;
+		this.tijd = berichtInfoBuilder.tijd;
 	}
 
 	public String getEindpunt() {

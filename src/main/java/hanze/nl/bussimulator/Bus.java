@@ -2,10 +2,7 @@ package hanze.nl.bussimulator;
 
 import com.thoughtworks.xstream.XStream;
 import hanze.nl.bussimulator.Halte.Positie;
-import hanze.nl.model.IBericht;
-import hanze.nl.model.IETA;
-import hanze.nl.model.BerichtFactory;
-import hanze.nl.model.ETAFactory;
+import hanze.nl.model.*;
 
 public class Bus{
 
@@ -75,7 +72,7 @@ public class Bus{
 	}
 	
 	public void sendETAs(int nu){
-		IBericht bericht = BerichtFactory.createBericht(lijn.name(), bedrijf.name(), busID, nu);
+		IBericht bericht = createBericht(nu);
 		checkETA(bericht);
 
 		Positie eerstVolgende = lijn.getHalte(halteNummer+richting).getPositie();
@@ -101,12 +98,21 @@ public class Bus{
 	}
 	
 	public void sendLastETA(int nu){
-		IBericht bericht = BerichtFactory.createBericht(lijn.name(),bedrijf.name(),busID,nu);
+		IBericht bericht = createBericht(nu);
 		String eindpunt = lijn.getHalte(halteNummer).name();
 		IETA eta = ETAFactory.createETA(eindpunt,lijn.getRichting(halteNummer),0);
 		bericht.getETAs().add(eta);
 		bericht.setEindpunt(eindpunt);
 		sendBericht(bericht);
+	}
+
+	private IBericht createBericht(int nu){
+		BerichtInfoBuilder builder = new BerichtInfoBuilder()
+				.setLijnNaam(lijn.name())
+				.setBedrijf(bedrijf.name())
+				.setBusID(busID)
+				.setTijd(nu);
+		return BerichtFactory.createBericht(builder);
 	}
 
 	public void sendBericht(IBericht bericht){

@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 public interface IBericht {
 
-    public String getEindpunt();
-    public void setEindpunt(String newEindpunt);
-    public ArrayList<IETA> getETAs();
+    String getEindpunt();
+    void setEindpunt(String newEindpunt);
+    ArrayList<IETA> getETAs();
 }
