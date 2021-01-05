@@ -2,7 +2,7 @@ package hanze.nl.bussimulator;
 import java.util.*;
 
 import hanze.nl.tijdtools.ITijdFuncties;
-import hanze.nl.tijdtools.TijdFuncties;
+import hanze.nl.tijdtools.TijdFunctiesFactory;
 
 public class Runner {
 
@@ -72,7 +72,7 @@ public class Runner {
 	}
 	
 	public static void main(String[] args) throws InterruptedException {
-		ITijdFuncties tijdFuncties = new TijdFuncties();
+		ITijdFuncties tijdFuncties = TijdFunctiesFactory.create();
 		tijdFuncties.initSimulatorTijden(interval,syncInterval);
 		int volgende = initBussen();
 
