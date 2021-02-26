@@ -23,11 +23,14 @@ public class Runner {
 		bus.setbusID(starttijd);
 	}
 	
-	private static int startBussen(int tijd){
+	private static void startBussen(int tijd){
 		for (Bus bus : busStart.get(tijd)){
 			actieveBussen.add(bus);
 		}
 		busStart.remove(tijd);
+	}
+	
+	private static int getNextStartingBusNumber() {
 		return (!busStart.isEmpty()) ? Collections.min(busStart.keySet()) : -1;
 	}
 	
@@ -35,9 +38,10 @@ public class Runner {
 		Iterator<Bus> itr = actieveBussen.iterator();
 		while (itr.hasNext()) {
 			Bus bus = itr.next();
-			boolean eindpuntBereikt = bus.move();
+			boolean eindpuntBereikt = BusMovement.move(bus);
 			if (eindpuntBereikt) {
-				bus.sendLastETA(nu);
+				Bericht lastETA = BusMovement.createLastETA(bus, nu);
+				BusMovement.sendBericht(lastETA);
 				itr.remove();
 			}
 		}		
@@ -47,7 +51,7 @@ public class Runner {
 		Iterator<Bus> itr = actieveBussen.iterator();
 		while (itr.hasNext()) {
 			Bus bus = itr.next();
-			bus.sendETAs(nu);
+			BusMovement.sendETAs(bus, nu);
 		}				
 	}
 	
@@ -105,7 +109,10 @@ public class Runner {
 			counter=tijdFuncties.getCounter();
 			tijd=tijdFuncties.getTijdCounter();
 			System.out.println("De tijd is:" + tijdFuncties.getSimulatorWeergaveTijd());
-			volgende = (counter==volgende) ? startBussen(counter) : volgende;
+			if(volgende != counter) {
+				startBussen(counter);
+				volgende = getNextStartingBusNumber();
+			}
 			moveBussen(tijd);
 			sendETAs(tijd);
 			tijdFuncties.simulatorStep();
